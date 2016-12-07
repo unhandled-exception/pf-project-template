@@ -46,4 +46,4 @@ git clone https://github.com/unhandled-exception/pf2-project-template.git .
 
 [app/manage.p](app/manage.p) — консольное приложение для генерации кода моделей, форм, контролеров. Его можно расширить командами для нашего проекта. Команды можно вызвать из консоли или поставить в крон.
 
-Чтобы manage.p работал надо в папку bin пользователя (/home/user/bin) положить Парсер (/home/user/bin/parser3), sql-драйверы (/home/user/bin/lib) и кодировки (/home/user/charsets).
+Чтобы manage.p работал надо в папку bin пользователя (/home/user/bin) положить Парсер (/home/user/bin/parser3, бинарник без расширения), sql-драйверы (/home/user/bin/lib) и кодировки (/home/user/charsets).
