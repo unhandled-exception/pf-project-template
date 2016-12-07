@@ -6,8 +6,10 @@
 
 Для каждого приложения создаем пользователя «user» в системе и домашнюю папку /home/user. В домашней папке делаем папку для проекта /home/user/site.ru. В папку проекта клонируем репозиторий:
 
+```
 cd ~/site.ru
-`git clone https://github.com/unhandled-exception/pf2-project-template.git .`
+git clone https://github.com/unhandled-exception/pf2-project-template.git .
+```
 
 Удаляем папку .git и говорим git init, чтобы инициализировать пустой репозиторий гита. Вы же не собираетесь разрабатывать дальше без системы контроля версий?
 
