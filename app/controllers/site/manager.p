@@ -22,3 +22,10 @@ locals
 @onINDEX[aRequest]
   $self.title[$core.conf.siteName]
   ^render[/index.pt]
+
+@onNOTFOUND[aRequest]
+  $self.title[Страницы не найдена (404)]
+  $result[
+    $.status[404]
+    $.body[^render[/404.pt]]
+  ]
