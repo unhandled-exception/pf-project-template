@@ -6,7 +6,7 @@ $sqldriversdir[$confdir/lib]
 $CHARSETS[
 #    $.koi8-r[$charsetsdir/koi8-r.cfg]
 #    $.windows-1250[$charsetsdir/windows-1250.cfg]
-    $.windows-1251[$charsetsdir/windows-1251.cfg]
+#    $.windows-1251[$charsetsdir/windows-1251.cfg]
 #    $.windows-1257[$charsetsdir/windows-1257.cfg]
 ]
 #change your client libraries paths to those on your system
@@ -64,27 +64,27 @@ $LIMITS[
 
 $ADMIN_EMAIL[]
 
-$DEVELOPERS_IPS[
+$DEVELOPERS[
   $._default(false)
 ]
 
 @isDeveloper[aIP]
-  $result($DEVELOPERS_IPS.[^if(def $aIP){$aIP}{$env:REMOTE_ADDR}])
+  $result($DEVELOPERS.[^if(def $aIP){$aIP}{$env:REMOTE_ADDR}])
 
 @fatal_error[title;subtitle;body]
-#$response:status(500)
-#$response:content-type[
-#  $.value[text/html]
-#  $.charset[$response:charset]
-#]
-<html>
-<head><title>$title</title></head>
-<body>
-<H1>^if(def $subtitle){$subtitle;$title}</H1>
-$body
-#for [x] MSIE friendly
-^for[i](0;512/8){<!-- -->}
-</body>
+  $response:status(500)
+  $response:content-type[
+    $.value[text/html]
+    $.charset[$response:charset]
+  ]
+  <html>
+  <head><title>$title</title></head>
+  <body>
+  <H1>^if(def $subtitle){$subtitle;$title}</H1>
+  $body
+#  for [x] MSIE friendly
+  ^for[i](0;512/8){<!-- -->}
+  </body>
 
 @unhandled_exception_debug[exception;stack][lLink]
   ^fatal_error[Unhandled Exception^if(def $exception.type){ ($exception.type)};$exception.source ($exception.type);
@@ -106,29 +106,24 @@ $body
   ]
 
 @unhandled_exception_release[exception;stack]
-^fatal_error[<p>The server encountered an unhandled exception
-and was unable to complete your request.</p>
-<p>Please contact the server administrator, $env:SERVER_ADMIN
-and inform them of the time the error occurred,
-and anything you might have done that may have caused the error.</p>
-<p>More information about this error may be available in the Parser error log
-or in debug version of unhandled_exception.</p>
-]
+  ^fatal_error[<p>The server encountered an unhandled exception
+    and was unable to complete your request.</p>
+    <p>Please contact the server administrator, $env:SERVER_ADMIN
+    and inform them of the time the error occurred,
+    and anything you might have done that may have caused the error.</p>
+    <p>More information about this error may be available in the Parser error log
+    or in debug version of unhandled_exception.</p>
+  ]
 
 @unhandled_exception[exception;stack]
-#use debug version to see problem details
-$response:content-type[
-         $.value[text/html]
-         $.charset[$response:charset]
-]
-^if(^isDeveloper[$env:REMOTE_ADDR]){
-  ^unhandled_exception_debug[$exception;$stack]
-}{
-   ^switch[$exception.type]{
-     ^case[DEFAULT]{$response:location[/500.htm]}
+  ^if(^isDeveloper[$env:REMOTE_ADDR]){
+    ^unhandled_exception_debug[$exception;$stack]
+  }{
+     ^switch[$exception.type]{
+       ^case[DEFAULT]{$response:location[/500.htm]}
+     }
+     ^sendExceptionToAdmin[$exception;$stack]
    }
-   ^sendExceptionToAdmin[$exception;$stack]
- }
 
 @sendExceptionToAdmin[aException;aStack]
 ^try{

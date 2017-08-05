@@ -1,11 +1,12 @@
 @USE
+pf2/lib/common.p
 models/core.p
-controllers/site/manager.p
-pf2/lib/web/helpers/antiflood.p
-pf2/lib/web/middleware.p
 
 @auto[]
   $MAIN:ADMIN_EMAIL[admin@site.ru]
+  $MAIN:DEVELOPERS[
+    $._default(false)
+  ]
 
   $MAIN:CONF[
     $.host[site.ru]
@@ -56,7 +57,7 @@ pf2/lib/web/middleware.p
 # Пример файла:
 # @auto[]
 #   $CONF.features.maintenanceMode(true)
-#   $DEVELOPERS_IPS.[192.168.1.1](true)
+#   $DEVELOPERS.[192.168.1.1](true)
 
   ^pfClass:unsafe{
     ^use[./local_config.p]
@@ -68,6 +69,8 @@ pf2/lib/web/middleware.p
   $isDebug(^aOptions.isDebug.bool(false))
   $isMaintenanceMode(^aConf.features.maintenanceMode.bool(false))
 
+  ^use[controllers/site/manager.p]
+
   $sql[^pfSQLConnection::create[$aConf.connectString;
     $.enableMemoryCache(true)
     $.enableQueriesLog($isDebug)
@@ -78,18 +81,9 @@ pf2/lib/web/middleware.p
     $.sql[$sql]
   ]]
 
-  $antiFlood[^pfAntiFlood::create[
-    $.storage[^pfAntiFloodDBStorage::create[
-      ^hash::create[$aConf.antiFlood.storage]
-      $.cryptoProvider[$core.security]
-      $.sql[$sql]
-    ]]
-  ]]
-
   $manageraOptions[
     $.core[$core]
     $.sql[$sql]
-    $.antiFlood[$antiFlood]
     $.formater[$core.formater]
     $.templateFolder[/../../views/site]
     $.isDebug($isDebug)
@@ -102,20 +96,5 @@ pf2/lib/web/middleware.p
   }{
      $manager[^SiteManager::create[$manageraOptions]]
    }
-
-  ^manager.assignMiddleware[pfSecurityMiddleware;$aConf.security]
-  ^manager.assignMiddleware[pfCommonMiddleware;
-    $.disableHTTPCache(true)
-#     $.appendSlash(true)
-  ]
-
-  ^if($isDebug){
-    ^manager.assignMiddleware[pfDebugInfoMiddleware;
-      $.enable(true)
-      $.sql[$sql]
-      $.enableHighlightJS(true)
-#     $.hideQueryLog(true)
-    ]
-  }
 
   $result[$manager]
