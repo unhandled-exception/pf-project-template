@@ -1,1 +1,1 @@
-git clone git@github.com:unhandled-exception/pf2.git
+`git clone https://github.com/unhandled-exception/pf2.git`
