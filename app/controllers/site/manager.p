@@ -40,8 +40,8 @@ locals
   $self.title[$core.conf.siteName]
   ^render[/index.pt]
 
-@catch<http.404>[aRequest]
-  $self.title[Страницы не найдена (404)]
+@catch<http.404>[aRequest;aException]
+  $self.title[Страница не найдена (404)]
   $result[
     $.status[404]
     $.body[^render[/404.pt]]

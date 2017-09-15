@@ -12,7 +12,7 @@ $CHARSETS[
 #change your client libraries paths to those on your system
 $SQL[
     $.drivers[^table::create{protocol	driver	client
-mysql	$sqldriversdir/libparser3mysql.so	/usr/local/lib/mysql/libmysqlclient.so
+mysql	$sqldriversdir/libparser3mysql.so	/usr/lib/libmysqlclient.so
 #pgsql	$sqldriversdir/libparser3pgsql.so	-configure could not guess-
 #oracle	$sqldriversdir/libparser3oracle.so	-configure could not guess-
 #sqlite	$sqldriversdir/libparser3sqlite.so	-configure could not guess-
@@ -116,14 +116,29 @@ $DEVELOPERS[
   ]
 
 @unhandled_exception[exception;stack]
-  ^if(^isDeveloper[$env:REMOTE_ADDR]){
-    ^unhandled_exception_debug[$exception;$stack]
+#use debug version to see problem details
+$response:content-type[
+         $.value[text/html]
+         $.charset[$response:charset]
+]
+^if(^isDeveloper[$env:REMOTE_ADDR]){
+  ^try{
+     ^use[pf2/lib/debug/unhandled_exception.p]
+     $ue[^pfUnhandledExceptionDebug::create[]]
+     $result[^ue.render[$exception;$stack]]
   }{
-     ^switch[$exception.type]{
-       ^case[DEFAULT]{$response:location[/500.htm]}
+     $exception.handled(true)
+     $result[^unhandled_exception_debug[$exception;$stack]]
+  }
+}{
+   ^switch[$exception.type]{
+     ^case[DEFAULT]{
+       $error500[^file::load[text;/500.htm]]
+       $result[^taint[as-is][$error500.text]]
      }
-     ^sendExceptionToAdmin[$exception;$stack]
    }
+   ^sendExceptionToAdmin[$exception;$stack]
+ }
 
 @sendExceptionToAdmin[aException;aStack]
 ^try{
