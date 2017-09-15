@@ -1,8 +1,8 @@
 #!/usr/bin/env parser3
 
 @main[]
-  ^CLASS_PATH.append{./}
-  ^CLASS_PATH.append{/../vendor/}
+  ^CLASS_PATH.append{/app}
+  ^CLASS_PATH.append{/vendor/}
 
   ^use[config/app_config.p]
 
@@ -25,6 +25,10 @@
     $.core[$core]
   ]
 
+  ^app.assignCommand[sql][pf2/lib/console/commands/mysql.p@pfMySQLCommand][
+    $.sql[$csql]
+  ]
+
   $result[^app.run[]]
 
 #--------------------------------------------------------------------------------------------------
@@ -35,18 +39,18 @@
 $confdir[^file:dirname[$filespec]]
 
 # Назначаем директорию со скриптом как рут для поиска
-$request:document-root[$confdir]
+$request:document-root[^confdir.trim[right;.]]
 
-$parserlibsdir[$confdir/../../bin]
+$parserlibsdir[$confdir/../bin]
 $charsetsdir[$parserlibsdir/charsets]
 $sqldriversdir[$parserlibsdir/lib]
 
 $CHARSETS[
 #    $.koi8-r[$charsetsdir/koi8-r.cfg]
 #    $.windows-1250[$charsetsdir/windows-1250.cfg]
-    $.windows-1251[$charsetsdir/windows-1251.cfg]
+#    $.windows-1251[$charsetsdir/windows-1251.cfg]
 #    $.windows-1257[$charsetsdir/windows-1257.cfg]
-    $.iso-8859-1[$charsetsdir/windows-1250.cfg]
+#    $.iso-8859-1[$charsetsdir/windows-1250.cfg]
 ]
 
 $SQL[
