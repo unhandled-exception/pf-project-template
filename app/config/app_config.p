@@ -81,7 +81,7 @@ models/core.p
     $.sql[$sql]
   ]]
 
-  $manageraOptions[
+  $managerOptions[
     $.core[$core]
     $.sql[$sql]
     $.formater[$core.formater]
@@ -92,9 +92,9 @@ models/core.p
 
   ^if($isMaintenanceMode){
     ^use[controllers/site/maintenance.p]
-    $manager[^MaintenanceManager::create[$manageraOptions]]
+    $manager[^MaintenanceManager::create[$managerOptions]]
   }{
-     $manager[^SiteManager::create[$manageraOptions]]
+     $manager[^SiteManager::create[$managerOptions]]
    }
 
   $result[$manager]
